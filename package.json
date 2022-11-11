@@ -1,0 +1,14 @@
+{
+  "name": "editorjs-html-viewer",
+  "version": "1.0.0",
+  "description": "Editorjs viewer convert json to html.",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc index.ts --outDir dist"
+  },
+  "author": "yazan qwaider",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.8.4"
+  }
+}
