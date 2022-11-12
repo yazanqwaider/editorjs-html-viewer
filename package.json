@@ -4,7 +4,8 @@
   "description": "Editorjs viewer convert json to html.",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "tsc index.ts --outDir dist"
+    "dev": "tsc index.ts --outDir dist",
+    "watch": "tsc index.ts --outDir dist --watch"
   },
   "author": "yazan qwaider",
   "license": "MIT",
