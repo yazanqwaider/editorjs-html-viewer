@@ -24,15 +24,16 @@ class HtmlViewer {
      * 
      */
     parser() {
-        let result: String = "";
+        let result: string = "";
 
         this.jsonContent.map((jsonItem, index) => {
             switch(jsonItem.type) {
                 case "paragraph": result+= this.parseParagraph(jsonItem); break;
                 case "header": result+= this.parseHeader(jsonItem); break;
+                case "table": result+= this.parseTable(jsonItem); break;
             }
         });
-
+   
         this.html = result;
     }
 
@@ -41,7 +42,7 @@ class HtmlViewer {
      * 
      * @param jsonItem
      */
-    parseParagraph(jsonItem: ParagraphElement) {
+    parseParagraph(jsonItem: ParagraphElement): string {
         const data = jsonItem.data;
         return `<p>${data.text}</p>`;
     }
@@ -51,10 +52,46 @@ class HtmlViewer {
      * 
      * @param jsonItem
      */
-    parseHeader(jsonItem: HeaderElement) {
+    parseHeader(jsonItem: HeaderElement): string {
         const data = jsonItem.data;
         const level: String = (data.level)? data.level : "1";
         return `<h${level}>${data.text}</h${level}>`;
+    }
+
+    /**
+     * Parse table item type with it's rows and columns to html.
+     * 
+     * @param jsonItem
+     */
+    parseTable(jsonItem: TableElement): string {
+        const data = jsonItem.data;
+        let rows = data.content;
+        let table: string = '<table>';
+
+        if(data.withHeadings) {
+            let firstRow = data.content[0];
+            let heading = '<thead><tr>';
+            firstRow.map((col, index) => {
+                heading+= `<th>${col}</th>`;
+            });
+            heading+= '</tr></thead>';
+
+            table+= heading;
+            rows = rows.slice(1, rows.length);
+        }
+
+        table+= '<tbody>';
+        rows.map((row) => {
+            table+= '<tr>';
+            row.map((col) => {
+                table+= `<td>${col}</td>`;
+            });
+            table+= '</tr>';
+        });
+        table+= '</tbody>';
+
+        table+= '</table>';
+        return table;
     }
 
     public toString = (): String|undefined => {
@@ -70,20 +107,32 @@ interface EditorJsElement {
 }
 
 
+// Elements interfaces
 interface ParagraphElement extends EditorJsElement {
     data: ParagraphData
 }
+
 interface HeaderElement extends EditorJsElement {
     data: HeaderData
 }
 
+interface TableElement extends EditorJsElement {
+    data: TableData
+}
 
+// Data interfaces
 interface HeaderData {
     text: String
     level: String
 }
+
 interface ParagraphData {
     text: String
+}
+
+interface TableData {
+    withHeadings?: String
+    content: Array<Array<any>>
 }
 
 export default HtmlViewer;
