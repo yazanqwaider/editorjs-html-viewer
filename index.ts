@@ -31,6 +31,7 @@ class HtmlViewer {
                 case "paragraph": result+= this.parseParagraph(jsonItem); break;
                 case "header": result+= this.parseHeader(jsonItem); break;
                 case "table": result+= this.parseTable(jsonItem); break;
+                case "image": result+= this.parseImage(jsonItem); break;
             }
         });
    
@@ -94,6 +95,36 @@ class HtmlViewer {
         return table;
     }
 
+    /**
+     * Parse image item type with it's styles and caption to html.
+     * 
+     * @param jsonItem
+     */
+    parseImage(jsonItem: ImageElement): string {
+        const data = jsonItem.data;
+
+        let layoutStyle = `
+            width: 100% !important; 
+            border-radius: 8px !important; 
+            overflow: hidden !important;";
+            ${(data.withBackground)? "background-color: #f1f1f1;" : ""}
+            ${(data.withBorder)? "border: 1px solid #747474;" : ""}
+        `;
+        layoutStyle = layoutStyle.replace(/(\r\n|\n|\r)/gm, "");
+
+        let imageLayout = `<div style="${layoutStyle}">`;
+
+        let imageStyle = (data.stretched)? "width: 100% !important;" : "";
+        imageLayout+= `<img src="${data.file.url}" style="${imageStyle}" alt="Image" />`;
+
+        if(data.caption) {
+            imageLayout+= `<p style="padding: 7px 15px !important;">${data.caption}</p>`;
+        }
+        imageLayout+= "</div>";
+
+        return imageLayout;
+    }
+
     public toString = (): String|undefined => {
         return this.html;
     }
@@ -120,6 +151,11 @@ interface TableElement extends EditorJsElement {
     data: TableData
 }
 
+interface ImageElement extends EditorJsElement {
+    data: ImageData
+}
+
+
 // Data interfaces
 interface HeaderData {
     text: String
@@ -133,6 +169,16 @@ interface ParagraphData {
 interface TableData {
     withHeadings?: String
     content: Array<Array<any>>
+}
+
+interface ImageData {
+    file: {
+        url: string
+    }
+    caption?: string
+    withBorder: boolean
+    stretched: boolean
+    withBackground: Boolean
 }
 
 export default HtmlViewer;
