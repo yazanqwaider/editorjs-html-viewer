@@ -32,6 +32,7 @@ class HtmlViewer {
                 case "header": result+= this.parseHeader(jsonItem); break;
                 case "table": result+= this.parseTable(jsonItem); break;
                 case "image": result+= this.parseImage(jsonItem); break;
+                case "quote": result+= this.parseQuote(jsonItem); break;
             }
         });
    
@@ -125,6 +126,42 @@ class HtmlViewer {
         return imageLayout;
     }
 
+    /**
+     * Parse image item type with it's styles and caption to html.
+     * 
+     * @param jsonItem
+     */
+    parseQuote(jsonItem: QuoteElement): string {
+        const data = jsonItem.data;
+        let alignment = data.alignment || 'left';
+
+        const beginIcon = `<svg xmlns="http://www.w3.org/2000/svg" 
+                                width="18" height="18" viewBox="0 0 24 24">
+                                <path d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z"/>
+                            </svg>`;
+        const endIcon = `<svg xmlns="http://www.w3.org/2000/svg"
+                                width="18" height="18" viewBox="0 0 24 24">
+                                <path d="M11 9.275c0 5.141-3.892 10.519-10 11.725l-.984-2.126c2.215-.835 4.163-3.742 4.38-5.746-2.491-.392-4.396-2.547-4.396-5.149 0-3.182 2.584-4.979 5.199-4.979 3.015 0 5.801 2.305 5.801 6.275zm13 0c0 5.141-3.892 10.519-10 11.725l-.984-2.126c2.215-.835 4.163-3.742 4.38-5.746-2.491-.392-4.396-2.547-4.396-5.149 0-3.182 2.584-4.979 5.199-4.979 3.015 0 5.801 2.305 5.801 6.275z"/>
+                                </svg>`;
+
+        let quoteStyle = `text-align: ${alignment} !important`;
+        
+        let quote = `
+            <div style="${quoteStyle}">
+                <p style="margin-top: 5px; margin-bottom: 5px;">
+                    <span>${beginIcon}</span>
+                    ${data.text}
+                    <span>${endIcon}</span>
+                </p>
+                <smal style="padding-left: 15px !important; color: #5e5e5e !important;">
+                    ${data.caption}
+                </small>
+            </div>
+        `;
+        quote = quote.replace(/(\r\n|\n|\r)/gm, "");
+        return quote;
+    }
+
     public toString = (): String|undefined => {
         return this.html;
     }
@@ -155,6 +192,9 @@ interface ImageElement extends EditorJsElement {
     data: ImageData
 }
 
+interface QuoteElement extends EditorJsElement {
+    data: QuoteData
+}
 
 // Data interfaces
 interface HeaderData {
@@ -179,6 +219,12 @@ interface ImageData {
     withBorder: boolean
     stretched: boolean
     withBackground: Boolean
+}
+
+interface QuoteData {
+    text: string
+    caption: string
+    alignment: string
 }
 
 export default HtmlViewer;
