@@ -33,6 +33,7 @@ class HtmlViewer {
                 case "table": result+= this.parseTable(jsonItem); break;
                 case "image": result+= this.parseImage(jsonItem); break;
                 case "quote": result+= this.parseQuote(jsonItem); break;
+                case "list": result+= this.parseList(jsonItem); break;
             }
         });
    
@@ -162,6 +163,45 @@ class HtmlViewer {
         return quote;
     }
 
+    /**
+     * Parse list element to html.
+     * 
+     * @param jsonItem
+     */
+    parseList(jsonItem: ListElement): string {
+        const data = jsonItem.data;
+        let beginList = `${data.style == 'ordered'? '<ol>' : '<ul>'}`;
+        let endList = `${data.style == 'ordered'? '</ol>' : '</ul>'}`;
+        let list = beginList;
+
+        function renderListItem(item: string|NestedListItem): string {
+            let listItem = '';
+            if(typeof(item) == 'string') {
+                listItem+= `<li>${item}</li>`;
+            }
+            else if('content' in item) {
+                listItem+= `<li>${item.content}`;
+
+                if(item.items && item.items.length > 0) {
+                    listItem+= `${beginList}`;
+                    item.items.map((nestedItem: NestedListItem) => {
+                        listItem+= renderListItem(nestedItem);
+                    });
+                    listItem+= `${endList}`;
+                }
+                listItem+= `</li>`;
+            }
+            return listItem;
+        }
+
+        data.items.map((item: string|NestedListItem) => {
+            list+= renderListItem(item);
+        });
+
+        list+= endList;
+        return list;
+    }
+
     public toString = (): String|undefined => {
         return this.html;
     }
@@ -196,6 +236,10 @@ interface QuoteElement extends EditorJsElement {
     data: QuoteData
 }
 
+interface ListElement extends EditorJsElement {
+    data: ListData
+}
+
 // Data interfaces
 interface HeaderData {
     text: String
@@ -225,6 +269,16 @@ interface QuoteData {
     text: string
     caption: string
     alignment: string
+}
+
+interface ListData {
+    style: "ordered" | "unordered"
+    items: Array<string|NestedListItem>
+}
+
+interface NestedListItem {
+    content: string
+    items: Array<NestedListItem>
 }
 
 export default HtmlViewer;
