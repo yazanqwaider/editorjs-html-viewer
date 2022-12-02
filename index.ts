@@ -34,6 +34,7 @@ class HtmlViewer {
                 case "image": result+= this.parseImage(jsonItem); break;
                 case "quote": result+= this.parseQuote(jsonItem); break;
                 case "list": result+= this.parseList(jsonItem); break;
+                case "link": result+= this.parseLink(jsonItem); break;
             }
         });
    
@@ -202,6 +203,44 @@ class HtmlViewer {
         return list;
     }
 
+    /**
+     * Parse preview link element to html.
+     * 
+     * @param jsonItem
+     */
+    parseLink(jsonItem: LinkElement): string {
+        const data = jsonItem.data;
+
+        let linkLayoutStyle = "display: flex;"+
+                              "justify-content: space-between;"+
+                              "align-items: center;"+
+                              "background: white;"+
+                              "padding: 11px;"+
+                              "border: 1px solid #f5f5f5;"+
+                              "border-radius: 8px;"+
+                              "box-shadow: 1px 1px 2px #e5e5e5;"+
+                              "text-decoration: none;"+
+                              "color: black;";
+                              
+        let linkLayout = `<a href="${data.link}" title="${data.meta.title}" target="_blank" style="${linkLayoutStyle}">`;
+
+        linkLayout+= '<div>';
+        linkLayout+= `<h4>${data.meta.title}</h4>`;
+        linkLayout+= `<p>${data.meta.description}</p>`;
+        linkLayout+= `<span style="color: #c1c1c1;">${data.link}</span>`;
+        linkLayout+= '</div>';
+
+        if(data.meta.image.url) {
+            linkLayout+= '<div>';
+            linkLayout+= `<img src="${data.meta.image.url}" alt="Image" style="min-width:50px; max-width: 100px;" />`;
+            linkLayout+= '</div>';
+        }
+
+        linkLayout+= '</a>';
+        return linkLayout;
+    }
+
+
     public toString = (): String|undefined => {
         return this.html;
     }
@@ -238,6 +277,10 @@ interface QuoteElement extends EditorJsElement {
 
 interface ListElement extends EditorJsElement {
     data: ListData
+}
+
+interface LinkElement extends EditorJsElement {
+    data: LinkData
 }
 
 // Data interfaces
@@ -279,6 +322,21 @@ interface ListData {
 interface NestedListItem {
     content: string
     items: Array<NestedListItem>
+}
+
+interface LinkData {
+    link: string
+    meta: LinkMeta
+}
+
+interface LinkMeta {
+    title: string
+    description: string
+    image: ImageLinkMeta
+}
+
+interface ImageLinkMeta {
+    url: string
 }
 
 export default HtmlViewer;
