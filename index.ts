@@ -29,12 +29,14 @@ class HtmlViewer {
         this.jsonContent.map((jsonItem, index) => {
             switch(jsonItem.type) {
                 case "paragraph": result+= this.parseParagraph(jsonItem); break;
+                case "text": result+= this.parseParagraph(jsonItem); break;
                 case "header": result+= this.parseHeader(jsonItem); break;
                 case "table": result+= this.parseTable(jsonItem); break;
                 case "image": result+= this.parseImage(jsonItem); break;
                 case "quote": result+= this.parseQuote(jsonItem); break;
                 case "list": result+= this.parseList(jsonItem); break;
                 case "link": result+= this.parseLink(jsonItem); break;
+                case "delimiter": result+= this.parseDelimiter(jsonItem); break;
             }
         });
    
@@ -238,6 +240,15 @@ class HtmlViewer {
 
         linkLayout+= '</a>';
         return linkLayout;
+    }
+
+    /**
+     * get delimiter html content.
+     * 
+     */
+    parseDelimiter(jsonItem: EditorJsElement): string {
+        let delimiter = "<div style='text-align: center; font-size: 35px; margin: 18px auto;'>* * *</div>";
+        return delimiter;
     }
 
 
