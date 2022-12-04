@@ -39,7 +39,8 @@ class HtmlViewer {
                 case "delimiter": result+= this.parseDelimiter(jsonItem); break;
             }
         });
-   
+
+        result = result.replace(/(\r\n|\n|\r)/gm, "");
         this.html = result;
     }
 
@@ -72,13 +73,13 @@ class HtmlViewer {
     parseTable(jsonItem: TableElement): string {
         const data = jsonItem.data;
         let rows = data.content;
-        let table: string = '<table>';
+        let table: string = '<table style="border: 1px solid #f1f1f1;">';
 
         if(data.withHeadings) {
             let firstRow = data.content[0];
-            let heading = '<thead><tr>';
+            let heading = '<thead style="border-bottom: 1px solid #f1f1f1;"><tr>';
             firstRow.map((col, index) => {
-                heading+= `<th>${col}</th>`;
+                heading+= `<th style="border-left: 1px solid #e1e1e1; border-right: 1px solid #e1e1e1; padding: 5px;">${col}</th>`;
             });
             heading+= '</tr></thead>';
 
@@ -111,11 +112,10 @@ class HtmlViewer {
         let layoutStyle = `
             width: 100% !important; 
             border-radius: 8px !important; 
-            overflow: hidden !important;";
+            overflow: hidden !important;
             ${(data.withBackground)? "background-color: #f1f1f1;" : ""}
             ${(data.withBorder)? "border: 1px solid #747474;" : ""}
         `;
-        layoutStyle = layoutStyle.replace(/(\r\n|\n|\r)/gm, "");
 
         let imageLayout = `<div style="${layoutStyle}">`;
 
@@ -162,7 +162,6 @@ class HtmlViewer {
                 </small>
             </div>
         `;
-        quote = quote.replace(/(\r\n|\n|\r)/gm, "");
         return quote;
     }
 

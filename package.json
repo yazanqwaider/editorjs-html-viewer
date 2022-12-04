@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc index.ts --outDir dist",
-    "watch": "tsc index.ts --outDir dist --watch"
+    "watch": "tsc index.ts --outDir dist --watch",
+    "build": "tsc --build"
   },
   "author": "yazan qwaider",
   "license": "MIT",
