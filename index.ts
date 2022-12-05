@@ -7,7 +7,7 @@ class HtmlViewer {
     /**
      * The converted html content.
      */
-    html?: String
+    html?: string
 
     /**
      * Initialize instance from HtmlViewer class.
@@ -42,6 +42,26 @@ class HtmlViewer {
 
         result = result.replace(/(\r\n|\n|\r)/gm, "");
         this.html = result;
+    }
+
+    /**
+     * Render the html content in specific element
+     * 
+     * @param selector
+     */
+    render(selector: string): void {
+        const element: Element|null = document.querySelector(selector);
+        if(element != null) {
+            if(this.html) {
+                element.innerHTML = this.html;
+            }
+            else {
+                console.error('The html content is empty !');
+            }
+        }
+        else {
+            console.error('The element is not found !');
+        }
     }
 
     /**

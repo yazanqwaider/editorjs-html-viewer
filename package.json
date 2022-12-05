@@ -1,6 +1,6 @@
 {
   "name": "editorjs-html-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Editorjs viewer convert json to html.",
   "main": "dist/index.js",
   "scripts": {
