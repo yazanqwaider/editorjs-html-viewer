@@ -40,7 +40,7 @@ class HtmlViewer {
             }
         });
 
-        result = result.replace(/(\r\n|\n|\r)/gm, "");
+        result = result.replace(/(\r\n|\n|\r|\t)/gm, "");
         this.html = result;
     }
 
@@ -71,7 +71,21 @@ class HtmlViewer {
      */
     parseParagraph(jsonItem: ParagraphElement): string {
         const data = jsonItem.data;
-        return `<p>${data.text}</p>`;
+
+        // replace all inline-code class by it's style
+        const inlineCodeStyle = `style="
+                background: rgba(250, 239, 240, 0.78);
+                color: #b44437;
+                padding: 3px 4px;
+                border-radius: 5px;
+                margin: 0 1px;
+                font-family: inherit;
+                font-size: 0.86em;
+                font-weight: 500;
+                letter-spacing: 0.3px;"`;
+        let text = data.text.replace('class="inline-code"', inlineCodeStyle);
+
+        return `<p>${text}</p>`;
     }
 
     /**
