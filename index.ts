@@ -37,9 +37,10 @@ class HtmlViewer {
                 case "list": result+= this.parseList(jsonItem); break;
                 case "link": result+= this.parseLink(jsonItem); break;
                 case "delimiter": result+= this.parseDelimiter(jsonItem); break;
+                case "checklist": result+= this.parseChecklist(jsonItem); break;
             }
         });
-
+        
         result = result.replace(/(\r\n|\n|\r|\t)/gm, "");
         this.html = result;
     }
@@ -284,6 +285,37 @@ class HtmlViewer {
         return delimiter;
     }
 
+    /**
+     * Parse check list items with checked property.
+     * 
+     */
+    parseChecklist(jsonItem: CheckListElement): string {
+        const data = jsonItem.data;
+
+        let checkList = '<div>';
+
+        data.items.forEach((item) => {
+            checkList+= '<div class="checklist-item" style="margin: 7px auto; display: flex; align-items: center;">';
+
+            checkList+= `
+                <span class="checklist-item-icon">
+                    ${
+                        (item.checked == true)? 
+                            '<svg width="23" height="23" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m11.998 2.005c5.517 0 9.997 4.48 9.997 9.997 0 5.518-4.48 9.998-9.997 9.998-5.518 0-9.998-4.48-9.998-9.998 0-5.517 4.48-9.997 9.998-9.997zm-5.049 10.386 3.851 3.43c.142.128.321.19.499.19.202 0 .405-.081.552-.242l5.953-6.509c.131-.143.196-.323.196-.502 0-.41-.331-.747-.748-.747-.204 0-.405.082-.554.243l-5.453 5.962-3.298-2.938c-.144-.127-.321-.19-.499-.19-.415 0-.748.335-.748.746 0 .205.084.409.249.557z" fill-rule="nonzero"/></svg>' :
+                            '<svg width="21" height="21" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11z"/></svg>'
+                    }
+                </span>
+            `;
+
+            checkList+= `<p style="padding: 0px 7px; margin: 0px; font-size:18px;">${item.text}</p>`;
+
+            checkList+= '</div>';
+        });
+
+        checkList+= '</div>';
+
+        return checkList;
+    }
 
     public toString = (): String|undefined => {
         return this.html;
@@ -325,6 +357,10 @@ interface ListElement extends EditorJsElement {
 
 interface LinkElement extends EditorJsElement {
     data: LinkData
+}
+
+interface CheckListElement extends EditorJsElement {
+    data: CheckListData
 }
 
 // Data interfaces
@@ -382,5 +418,15 @@ interface LinkMeta {
 interface ImageLinkMeta {
     url: string
 }
+
+interface CheckListData {
+    items: Array<CheckListItem>
+}
+
+type CheckListItem = {
+    text: string
+    checked: boolean
+}
+
 
 export default HtmlViewer;

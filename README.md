@@ -38,3 +38,4 @@ htmlViewer.render("#contentLayout");    // you can render html directly by passi
 - Link
 - Delimiter
 - Inline code
+- Checklist
