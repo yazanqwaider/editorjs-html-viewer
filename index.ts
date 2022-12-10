@@ -38,6 +38,7 @@ class HtmlViewer {
                 case "link": result+= this.parseLink(jsonItem); break;
                 case "delimiter": result+= this.parseDelimiter(jsonItem); break;
                 case "checklist": result+= this.parseChecklist(jsonItem); break;
+                case "warning": result+= this.parseWarning(jsonItem); break;
             }
         });
         
@@ -317,6 +318,21 @@ class HtmlViewer {
         return checkList;
     }
 
+    /**
+     * Parse warning item.
+     * 
+     */
+    parseWarning(jsonItem: WarningElement): string {
+        const data = jsonItem.data;
+
+        let warning = '<div class="warning-layout" style="padding: 18px 5px;border: 1px solid #f7f7f7;margin: 8px;">';
+        warning+= `<h4 style="margin: 0px; font-weight: bold;"><span>&#128073;</span> ${data.title}</h4>`;
+        warning+= `<p style="margin: 3px 22px;color: #181818;">${data.message}</p>`;
+        warning+= '</div>'
+
+        return warning;
+    }
+
     public toString = (): String|undefined => {
         return this.html;
     }
@@ -361,6 +377,10 @@ interface LinkElement extends EditorJsElement {
 
 interface CheckListElement extends EditorJsElement {
     data: CheckListData
+}
+
+interface WarningElement extends EditorJsElement {
+    data: WarningData
 }
 
 // Data interfaces
@@ -426,6 +446,11 @@ interface CheckListData {
 type CheckListItem = {
     text: string
     checked: boolean
+}
+
+interface WarningData {
+    title: string
+    message: string
 }
 
 
