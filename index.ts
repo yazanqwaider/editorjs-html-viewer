@@ -175,11 +175,11 @@ class HtmlViewer {
         const data = jsonItem.data;
         let alignment = data.alignment || 'left';
 
-        const beginIcon = `<svg xmlns="http://www.w3.org/2000/svg" 
+        const beginIcon = `<svg style="display: inline-block !important;" xmlns="http://www.w3.org/2000/svg" 
                                 width="18" height="18" viewBox="0 0 24 24">
                                 <path d="M13 14.725c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275zm-13 0c0-5.141 3.892-10.519 10-11.725l.984 2.126c-2.215.835-4.163 3.742-4.38 5.746 2.491.392 4.396 2.547 4.396 5.149 0 3.182-2.584 4.979-5.199 4.979-3.015 0-5.801-2.305-5.801-6.275z"/>
                             </svg>`;
-        const endIcon = `<svg xmlns="http://www.w3.org/2000/svg"
+        const endIcon = `<svg style="display: inline-block !important;" xmlns="http://www.w3.org/2000/svg"
                                 width="18" height="18" viewBox="0 0 24 24">
                                 <path d="M11 9.275c0 5.141-3.892 10.519-10 11.725l-.984-2.126c2.215-.835 4.163-3.742 4.38-5.746-2.491-.392-4.396-2.547-4.396-5.149 0-3.182 2.584-4.979 5.199-4.979 3.015 0 5.801 2.305 5.801 6.275zm13 0c0 5.141-3.892 10.519-10 11.725l-.984-2.126c2.215-.835 4.163-3.742 4.38-5.746-2.491-.392-4.396-2.547-4.396-5.149 0-3.182 2.584-4.979 5.199-4.979 3.015 0 5.801 2.305 5.801 6.275z"/>
                                 </svg>`;
@@ -263,7 +263,7 @@ class HtmlViewer {
 
         linkLayout+= '<div>';
         linkLayout+= `<h4>${data.meta.title}</h4>`;
-        linkLayout+= `<p>${data.meta.description}</p>`;
+        linkLayout+= (data.meta.description)? `<p>${data.meta.description}</p>` : '';
         linkLayout+= `<span style="color: #c1c1c1;">${data.link}</span>`;
         linkLayout+= '</div>';
 
@@ -303,7 +303,7 @@ class HtmlViewer {
                     ${
                         (item.checked == true)? 
                             '<svg width="23" height="23" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m11.998 2.005c5.517 0 9.997 4.48 9.997 9.997 0 5.518-4.48 9.998-9.997 9.998-5.518 0-9.998-4.48-9.998-9.998 0-5.517 4.48-9.997 9.998-9.997zm-5.049 10.386 3.851 3.43c.142.128.321.19.499.19.202 0 .405-.081.552-.242l5.953-6.509c.131-.143.196-.323.196-.502 0-.41-.331-.747-.748-.747-.204 0-.405.082-.554.243l-5.453 5.962-3.298-2.938c-.144-.127-.321-.19-.499-.19-.415 0-.748.335-.748.746 0 .205.084.409.249.557z" fill-rule="nonzero"/></svg>' :
-                            '<svg width="21" height="21" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11z"/></svg>'
+                            '<svg width="20" height="20" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0c6.623 0 12 5.377 12 12s-5.377 12-12 12-12-5.377-12-12 5.377-12 12-12zm0 1c6.071 0 11 4.929 11 11s-4.929 11-11 11-11-4.929-11-11 4.929-11 11-11z"/></svg>'
                     }
                 </span>
             `;
@@ -325,7 +325,7 @@ class HtmlViewer {
     parseWarning(jsonItem: WarningElement): string {
         const data = jsonItem.data;
 
-        let warning = '<div class="warning-layout" style="padding: 18px 5px;border: 1px solid #f7f7f7;margin: 8px;">';
+        let warning = '<div class="warning-layout" style="padding: 18px 5px; border: 1px solid #f7f7f7; margin: 8px; box-shadow: 0px 0px 4px #f7f7f7;">';
         warning+= `<h4 style="margin: 0px; font-weight: bold;"><span>&#128073;</span> ${data.title}</h4>`;
         warning+= `<p style="margin: 3px 22px;color: #181818;">${data.message}</p>`;
         warning+= '</div>'
