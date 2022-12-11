@@ -24,9 +24,11 @@ class HtmlViewer {
      * 
      */
     parser() {
-        let result: string = "";
+        let result: string = "<div id='editorjs-preview'>";
 
         this.jsonContent.map((jsonItem, index) => {
+            result+= `<div class="ede" id="ede-${jsonItem.id}" style="margin: 10px 0px;">`;
+
             switch(jsonItem.type) {
                 case "paragraph": result+= this.parseParagraph(jsonItem); break;
                 case "text": result+= this.parseParagraph(jsonItem); break;
@@ -40,7 +42,11 @@ class HtmlViewer {
                 case "checklist": result+= this.parseChecklist(jsonItem); break;
                 case "warning": result+= this.parseWarning(jsonItem); break;
             }
+
+            result+= '</div>'
         });
+
+        result+= '</div>'
         
         result = result.replace(/(\r\n|\n|\r|\t)/gm, "");
         this.html = result;
@@ -125,9 +131,9 @@ class HtmlViewer {
 
         table+= '<tbody>';
         rows.map((row) => {
-            table+= '<tr>';
+            table+= '<tr style="border-bottom: 1px solid #efefef;">';
             row.map((col) => {
-                table+= `<td>${col}</td>`;
+                table+= `<td style="border-left: 1px solid #efefef; border-right: 1px solid #efefef; padding: 3px;">${col}</td>`;
             });
             table+= '</tr>';
         });

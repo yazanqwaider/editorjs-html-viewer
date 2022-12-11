@@ -3,6 +3,10 @@
   "version": "1.0.3",
   "description": "Editorjs viewer convert json to html.",
   "keywords": ["EditorJs", "Typescript"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yazanqwaider/editorjs-html-viewer"
+  },
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsc index.ts --outDir dist",
