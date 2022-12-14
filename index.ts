@@ -41,12 +41,13 @@ class HtmlViewer {
                 case "delimiter": result+= this.parseDelimiter(jsonItem); break;
                 case "checklist": result+= this.parseChecklist(jsonItem); break;
                 case "warning": result+= this.parseWarning(jsonItem); break;
+                case "code": result+= this.parseCode(jsonItem); break;
             }
 
-            result+= '</div>'
+            result+= '</div>';
         });
 
-        result+= '</div>'
+        result+= '</div>';
         
         result = result.replace(/(\r\n|\n|\r|\t)/gm, "");
         this.html = result;
@@ -62,6 +63,8 @@ class HtmlViewer {
         if(element != null) {
             if(this.html) {
                 element.innerHTML = this.html;
+
+                this.applyHandlers();
             }
             else {
                 console.error('The html content is empty !');
@@ -339,6 +342,69 @@ class HtmlViewer {
         return warning;
     }
 
+    /**
+     * Parse code element to html.
+     * 
+     * @param jsonItem 
+     */
+    parseCode(jsonItem: CodeElement): string {
+        const data = jsonItem.data;
+
+        let code = '<div style="padding: 18px; border-radius: 9px; background: #f6f8fa; line-height: 1.45; position: relative;">';
+
+        let copyBtn = '<button class="copy-code-btn" style="position: absolute; top: 10px; right: 10px;">'+
+                        '<svg width="24" height="24" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m6 18h-3c-.48 0-1-.379-1-1v-14c0-.481.38-1 1-1h14c.621 0 1 .522 1 1v3h3c.621 0 1 .522 1 1v14c0 .621-.522 1-1 1h-14c-.48 0-1-.379-1-1zm1.5-10.5v13h13v-13zm9-1.5v-2.5h-13v13h2.5v-9.5c0-.481.38-1 1-1z" fill-rule="nonzero"/></svg>'+
+                    '</button>';
+        
+        code+= copyBtn;
+        code+= `<p class="code-value">${data.code}</p>`;
+        code+= '</div>';
+
+        return code;
+    }
+
+    /**
+     * Apply some handlers to let features work correctly.
+     * 
+     */
+    applyHandlers() {
+        this.registerCopyHandler();
+    }
+
+    /**
+     * register copy handler, to copy code text in code feature.
+     * 
+     */
+    private registerCopyHandler(): void {
+        const copyBtns = document.querySelectorAll('.ede .copy-code-btn');
+        copyBtns.forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                const value = btn.nextElementSibling?.innerHTML;
+
+                if(value) {
+                    navigator.clipboard.writeText(value);
+                }
+
+                const svg = btn.querySelector('svg');
+                if(svg) {
+                    svg.style.display = "none";
+                }
+
+                let copiedNote = document.createElement('span');
+                copiedNote.className = "copied-note";
+                copiedNote.innerHTML = 'copied &#128077;';
+                btn.append(copiedNote);
+
+                setTimeout(() => {
+                    if(svg) {
+                        svg.style.display = "inline-block";
+                        copiedNote.remove();
+                    }
+                }, 1500)
+            });
+        });
+    }
+
     public toString = (): String|undefined => {
         return this.html;
     }
@@ -387,6 +453,10 @@ interface CheckListElement extends EditorJsElement {
 
 interface WarningElement extends EditorJsElement {
     data: WarningData
+}
+
+interface CodeElement extends EditorJsElement {
+    data: CodeData
 }
 
 // Data interfaces
@@ -457,6 +527,10 @@ type CheckListItem = {
 interface WarningData {
     title: string
     message: string
+}
+
+interface CodeData {
+    code: string
 }
 
 
