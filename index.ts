@@ -42,6 +42,7 @@ class HtmlViewer {
                 case "checklist": result+= this.parseChecklist(jsonItem); break;
                 case "warning": result+= this.parseWarning(jsonItem); break;
                 case "code": result+= this.parseCode(jsonItem); break;
+                case "embed": result+= this.parseEmbed(jsonItem); break;
             }
 
             result+= '</div>';
@@ -364,6 +365,29 @@ class HtmlViewer {
     }
 
     /**
+     * Parse embed link to html.
+     * 
+     * @param jsonItem 
+     */
+    parseEmbed(jsonItem: EmbedElement): string {
+        const data = jsonItem.data;
+
+        let embedContent = `<iframe src="${data.embed}" width="${data.width}" height="${data.height}"`+
+                            'style="border: 0; border-radius: 14px; box-shadow: 2px 2px 20px #e1e1e1;"'+
+                        '></iframe>';
+        
+        let embedLayout = '<div>';
+        embedLayout+= embedContent;
+
+        if(data.caption) {
+            embedLayout+= `<p style="padding: 0px; margin: 12px 23px;">${data.caption}</p>`;
+        }
+        
+        embedLayout+= '</div>';
+        return embedLayout;
+    }
+
+    /**
      * Apply some handlers to let features work correctly.
      * 
      */
@@ -459,6 +483,10 @@ interface CodeElement extends EditorJsElement {
     data: CodeData
 }
 
+interface EmbedElement extends EditorJsElement {
+    data: EmbedData
+}
+
 // Data interfaces
 interface HeaderData {
     text: String
@@ -531,6 +559,15 @@ interface WarningData {
 
 interface CodeData {
     code: string
+}
+
+interface EmbedData {
+    service: string
+    source: string
+    embed: string
+    width: number|string
+    height: number|string
+    caption: string|null
 }
 
 
