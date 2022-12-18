@@ -43,6 +43,7 @@ class HtmlViewer {
                 case "warning": result+= this.parseWarning(jsonItem); break;
                 case "code": result+= this.parseCode(jsonItem); break;
                 case "embed": result+= this.parseEmbed(jsonItem); break;
+                case "personality": result+= this.parsePersonality(jsonItem); break;
             }
 
             result+= '</div>';
@@ -387,6 +388,35 @@ class HtmlViewer {
         return embedLayout;
     }
 
+
+    /**
+     * Parse personality card to html.
+     * 
+     * @param jsonItem 
+     */
+    parsePersonality(jsonItem: PersonalityElement): string {
+        const data = jsonItem.data;
+
+        const cardStyle = 'display: flex; justify-content: space-between; width: 80%; background: white;'+ 
+            'border: 1px solid #ededed; padding: 18px; box-shadow: 1px 1px 4px #f3f3f3; border-radius: 7px;';
+
+        let personality = `<div style="${cardStyle}">`;
+
+        personality+= `<div>
+                        <h3 style="font-size: 18px;">${data.name}</h3>
+                        <p>${data.description}</p>
+                        ${(data.link)? '<a href="${data.link}" style="color: #a3a3a3;">${data.link}</a>':''}
+                    </div>`;
+
+        if(data.photo) {
+            personality+= `<img src="${data.photo}" style="width: 100px; border-radius: 5px;">`
+        }
+
+        personality+= '</div>';
+
+        return personality;
+    }
+
     /**
      * Apply some handlers to let features work correctly.
      * 
@@ -487,6 +517,11 @@ interface EmbedElement extends EditorJsElement {
     data: EmbedData
 }
 
+interface PersonalityElement extends EditorJsElement {
+    data: PersonalityData
+}
+
+
 // Data interfaces
 interface HeaderData {
     text: String
@@ -568,6 +603,14 @@ interface EmbedData {
     width: number|string
     height: number|string
     caption: string|null
+}
+
+
+interface PersonalityData {
+    name: string
+    description: string
+    link: string
+    photo: string
 }
 
 

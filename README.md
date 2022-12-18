@@ -65,3 +65,4 @@ htmlViewer.applyHandlers();
 - Checklist
 - Warning
 - Embed
+- Personality
