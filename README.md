@@ -66,3 +66,4 @@ htmlViewer.applyHandlers();
 - Warning
 - Embed
 - Personality
+- Attaches

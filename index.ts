@@ -44,6 +44,7 @@ class HtmlViewer {
                 case "code": result+= this.parseCode(jsonItem); break;
                 case "embed": result+= this.parseEmbed(jsonItem); break;
                 case "personality": result+= this.parsePersonality(jsonItem); break;
+                case "attaches": result+= this.parseAttaches(jsonItem); break;
             }
 
             result+= '</div>';
@@ -418,6 +419,33 @@ class HtmlViewer {
     }
 
     /**
+     * Parse attchments to html
+     * 
+     * @param jsonItem
+     */
+    parseAttaches(jsonItem: AttachesElement): string {
+        const data = jsonItem.data;
+
+        const attachmentStyle = 'display: flex; align-items: center; gap: 18px;'+
+                                'text-decoration: none; color: black; width: 50%; padding: 13px;'+
+                                'border: 1px solid #f1f1f1; border-radius: 9px;';
+        
+        const extensionStyle = 'display: inline-block; padding: 6px 6px; background: #db3737; color: white; border-radius: 7px;';
+
+
+        let attachment = `<a href="${data.file.url}" target="_blank" style="${attachmentStyle}" title="${data.title}">`+
+                            `<span style="${extensionStyle}">${data.file.extension}</span>`+
+                            `<div>`+
+                                `<p style="margin: 0px;">${data.file.name}</p>`+
+                                `${(data.file.size)? `<span style="color: #8b8b8b; font-size: 15px;">${data.file.size} MiB</span>` : ''}`+
+                            `</div>`+
+                            '<span style="margin-left: auto; color: #565695;">Show</span>'+
+                        `</a>`;
+
+        return attachment;
+    }
+
+    /**
      * Apply some handlers to let features work correctly.
      * 
      */
@@ -521,6 +549,9 @@ interface PersonalityElement extends EditorJsElement {
     data: PersonalityData
 }
 
+interface AttachesElement extends EditorJsElement {
+    data: AttachesData
+}
 
 // Data interfaces
 interface HeaderData {
@@ -613,5 +644,16 @@ interface PersonalityData {
     photo: string
 }
 
+interface AttachesData {
+    file: AttachmentFile
+    title?: string
+}
+
+type AttachmentFile = {
+    url: string
+    size?: string|number
+    extension?: string
+    name?: string
+}
 
 export default HtmlViewer;
