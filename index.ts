@@ -161,13 +161,17 @@ class HtmlViewer {
             width: 100% !important; 
             border-radius: 8px !important; 
             overflow: hidden !important;
+            position: relative;
             ${(data.withBackground)? "background-color: #f1f1f1;" : ""}
             ${(data.withBorder)? "border: 1px solid #747474;" : ""}
         `;
 
-        let imageLayout = `<div style="${layoutStyle}">`;
+        let imageLayout = `<div style="${layoutStyle}">`+
+                            '<button class="scale-image-btn" style="position: absolute; top: 10px; right: 10px;">'+
+                                '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-2v-4h-4v-2h6v6zm-6 12v-2h4v-4h2v6h-6zm-18-6h2v4h4v2h-6v-6zm6-12v2h-4v4h-2v-6h6z"/></svg>'+
+                            '</button>';
 
-        let imageStyle = (data.stretched)? "width: 100% !important;" : "";
+        let imageStyle = (data.stretched)? "width: 100%;" : "";
         imageLayout+= `<img src="${data.file.url}" style="${imageStyle}" alt="Image" />`;
 
         if(data.caption) {
@@ -451,10 +455,11 @@ class HtmlViewer {
      */
     applyHandlers() {
         this.registerCopyHandler();
+        this.registerScaleImageHandler();
     }
 
     /**
-     * register copy handler, to copy code text in code feature.
+     * Register copy handler, to copy code text in code feature.
      * 
      */
     private registerCopyHandler(): void {
@@ -483,6 +488,50 @@ class HtmlViewer {
                         copiedNote.remove();
                     }
                 }, 1500)
+            });
+        });
+    }
+
+
+    /**
+     * Register scale image handler.
+     * 
+     */
+    private registerScaleImageHandler(): void {
+        const scaleBtns = document.querySelectorAll('.ede .scale-image-btn');
+
+        scaleBtns.forEach((btn, index) => {
+            btn.addEventListener('click', function() {
+                if(btn.parentElement!.style.position == 'relative') {
+                    btn.parentElement!.style.position = "fixed";
+                    btn.parentElement!.style.top = "0px";
+                    btn.parentElement!.style.left = "0px";
+                    btn.parentElement!.style.background = "#efefef80";
+                    btn.parentElement!.style.height = "100%";
+                    btn.parentElement!.style.zIndex = "9999999";
+
+                    const img = btn.parentElement!.querySelector('img');
+                    if(img != undefined) {
+                        img.style.height = "100%";
+                        img.style.width = "auto";
+                        img.style.margin = "auto";
+                    }
+
+                    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M18 3h2v4h4v2h-6v-6zm6 12v2h-4v4h-2v-6h6zm-18 6h-2v-4h-4v-2h6v6zm-6-12v-2h4v-4h2v6h-6z"/></svg>';
+                }
+                else {
+                    btn.parentElement!.style.position = "relative";
+                    btn.parentElement!.style.height = "auto";
+                    btn.parentElement!.style.zIndex = "auto";
+
+                    const img = btn.parentElement!.querySelector('img');
+                    if(img != undefined) {
+                        img.style.height = "auto";
+                        img.style.width = "100%";
+                    }
+
+                    btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-2v-4h-4v-2h6v6zm-6 12v-2h4v-4h2v6h-6zm-18-6h2v4h4v2h-6v-6zm6-12v2h-4v4h-2v-6h6z"/></svg>';
+                }
             });
         });
     }
