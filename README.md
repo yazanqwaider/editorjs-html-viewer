@@ -13,13 +13,24 @@ npm i editorjs-html-viewer
 
 ## Import
 
+***JS***
+
 ```js
 import HtmlViewer from 'editorjs-html-viewer';
 ```
 
+And in nodejs environment :
+
+```js
+const HtmlViewer = require('editorjs-html-viewer').default;
+```
+
+
+***CSS***
+
 Import style from cdn :
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/editorjs-html-viewer@1.3.0/dist/css/main.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/editorjs-html-viewer@latest/dist/css/main.min.css">
 ```
 
 Import style from css file :
@@ -33,11 +44,6 @@ From js code :
 import 'editorjs-html-viewer/dist/css/main.min.css';
 ```
 
-And in nodejs environment :
-
-```js
-const HtmlViewer = require('editorjs-html-viewer').default;
-```
 
 
 ## Usage
