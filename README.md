@@ -17,6 +17,22 @@ npm i editorjs-html-viewer
 import HtmlViewer from 'editorjs-html-viewer';
 ```
 
+Import style from cdn :
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/editorjs-html-viewer@1.3.0/dist/css/main.min.css">
+```
+
+Import style from css file :
+```css
+@import 'editorjs-html-viewer/dist/css/main.min.css';
+```
+
+From js code :
+
+```js
+import 'editorjs-html-viewer/dist/css/main.min.css';
+```
+
 And in nodejs environment :
 
 ```js

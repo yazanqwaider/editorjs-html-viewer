@@ -1,3 +1,5 @@
+import './types/types';
+
 class HtmlViewer {
     /**
      * The json content that will be converted to html.
@@ -27,7 +29,7 @@ class HtmlViewer {
         let result: string = "<div id='editorjs-preview'>";
 
         this.jsonContent.map((jsonItem, index) => {
-            result+= `<div class="ede" id="ede-${jsonItem.id}" style="margin: 10px 0px;">`;
+            result+= `<div class="ede" id="ede-${jsonItem.id}">`;
 
             switch(jsonItem.type) {
                 case "paragraph": result+= this.parseParagraph(jsonItem); break;
@@ -85,21 +87,7 @@ class HtmlViewer {
      */
     parseParagraph(jsonItem: ParagraphElement): string {
         const data = jsonItem.data;
-
-        // replace all inline-code class by it's style
-        const inlineCodeStyle = `style="
-                background: rgba(250, 239, 240, 0.78);
-                color: #b44437;
-                padding: 3px 4px;
-                border-radius: 5px;
-                margin: 0 1px;
-                font-family: inherit;
-                font-size: 0.86em;
-                font-weight: 500;
-                letter-spacing: 0.3px;"`;
-        let text = data.text.replace('class="inline-code"', inlineCodeStyle);
-
-        return `<p>${text}</p>`;
+        return `<p>${data.text}</p>`;
     }
 
     /**
@@ -121,13 +109,13 @@ class HtmlViewer {
     parseTable(jsonItem: TableElement): string {
         const data = jsonItem.data;
         let rows = data.content;
-        let table: string = '<table style="border: 1px solid #f1f1f1;">';
+        let table: string = '<table>';
 
         if(data.withHeadings) {
             let firstRow = data.content[0];
-            let heading = '<thead style="border-bottom: 1px solid #f1f1f1;"><tr>';
+            let heading = '<thead><tr>';
             firstRow.map((col, index) => {
-                heading+= `<th style="border-left: 1px solid #e1e1e1; border-right: 1px solid #e1e1e1; padding: 5px;">${col}</th>`;
+                heading+= `<th>${col}</th>`;
             });
             heading+= '</tr></thead>';
 
@@ -137,9 +125,9 @@ class HtmlViewer {
 
         table+= '<tbody>';
         rows.map((row) => {
-            table+= '<tr style="border-bottom: 1px solid #efefef;">';
+            table+= '<tr>';
             row.map((col) => {
-                table+= `<td style="border-left: 1px solid #efefef; border-right: 1px solid #efefef; padding: 3px;">${col}</td>`;
+                table+= `<td>${col}</td>`;
             });
             table+= '</tr>';
         });
@@ -157,25 +145,15 @@ class HtmlViewer {
     parseImage(jsonItem: ImageElement): string {
         const data = jsonItem.data;
 
-        let layoutStyle = `
-            width: 100% !important; 
-            border-radius: 8px !important; 
-            overflow: hidden !important;
-            position: relative;
-            ${(data.withBackground)? "background-color: #f1f1f1;" : ""}
-            ${(data.withBorder)? "border: 1px solid #747474;" : ""}
-        `;
-
-        let imageLayout = `<div style="${layoutStyle}">`+
-                            '<button class="scale-image-btn" style="position: absolute; top: 10px; right: 10px;">'+
+        let imageLayout = `<div class="image-layout ${(data.withBackground)? "image-wbackground":""} ${(data.withBorder)? "image-wborder" : ""}">`+
+                            '<button class="scale-image-btn">'+
                                 '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-2v-4h-4v-2h6v6zm-6 12v-2h4v-4h2v6h-6zm-18-6h2v4h4v2h-6v-6zm6-12v2h-4v4h-2v-6h6z"/></svg>'+
                             '</button>';
 
-        let imageStyle = (data.stretched)? "width: 100%;" : "";
-        imageLayout+= `<img src="${data.file.url}" style="${imageStyle}" alt="Image" />`;
+        imageLayout+= `<img src="${data.file.url}" class="${(data.stretched)? "width: 100%;" : ""}" alt="Image" />`;
 
         if(data.caption) {
-            imageLayout+= `<p style="padding: 7px 15px !important;">${data.caption}</p>`;
+            imageLayout+= `<p>${data.caption}</p>`;
         }
         imageLayout+= "</div>";
 
@@ -199,19 +177,16 @@ class HtmlViewer {
                                 width="18" height="18" viewBox="0 0 24 24">
                                 <path d="M11 9.275c0 5.141-3.892 10.519-10 11.725l-.984-2.126c2.215-.835 4.163-3.742 4.38-5.746-2.491-.392-4.396-2.547-4.396-5.149 0-3.182 2.584-4.979 5.199-4.979 3.015 0 5.801 2.305 5.801 6.275zm13 0c0 5.141-3.892 10.519-10 11.725l-.984-2.126c2.215-.835 4.163-3.742 4.38-5.746-2.491-.392-4.396-2.547-4.396-5.149 0-3.182 2.584-4.979 5.199-4.979 3.015 0 5.801 2.305 5.801 6.275z"/>
                                 </svg>`;
-
-        let quoteStyle = `text-align: ${alignment} !important`;
         
         let quote = `
-            <div style="${quoteStyle}">
-                <p style="margin-top: 5px; margin-bottom: 5px;">
+            <div class="quote-layout" style="text-align: ${alignment} !important;">
+                <p>
                     <span>${beginIcon}</span>
                     ${data.text}
                     <span>${endIcon}</span>
                 </p>
-                <smal style="padding-left: 15px !important; color: #5e5e5e !important;">
-                    ${data.caption}
-                </small>
+
+                <smal>${data.caption}</small>
             </div>
         `;
         return quote;
@@ -298,8 +273,7 @@ class HtmlViewer {
      * 
      */
     parseDelimiter(jsonItem: EditorJsElement): string {
-        let delimiter = "<div style='text-align: center; font-size: 35px; margin: 18px auto;'>* * *</div>";
-        return delimiter;
+        return "<div class='delimiter'>* * *</div>";
     }
 
     /**
@@ -312,7 +286,7 @@ class HtmlViewer {
         let checkList = '<div>';
 
         data.items.forEach((item) => {
-            checkList+= '<div class="checklist-item" style="margin: 7px auto; display: flex; align-items: center;">';
+            checkList+= '<div class="checklist-item">';
 
             checkList+= `
                 <span class="checklist-item-icon">
@@ -324,13 +298,11 @@ class HtmlViewer {
                 </span>
             `;
 
-            checkList+= `<p style="padding: 0px 7px; margin: 0px; font-size:18px;">${item.text}</p>`;
-
+            checkList+= `<p>${item.text}</p>`;
             checkList+= '</div>';
         });
 
         checkList+= '</div>';
-
         return checkList;
     }
 
@@ -341,9 +313,9 @@ class HtmlViewer {
     parseWarning(jsonItem: WarningElement): string {
         const data = jsonItem.data;
 
-        let warning = '<div class="warning-layout" style="padding: 18px 5px; border: 1px solid #f7f7f7; margin: 8px; box-shadow: 0px 0px 4px #f7f7f7;">';
-        warning+= `<h4 style="margin: 0px; font-weight: bold;"><span>&#128073;</span> ${data.title}</h4>`;
-        warning+= `<p style="margin: 3px 22px;color: #181818;">${data.message}</p>`;
+        let warning = '<div class="warning-layout">';
+        warning+= `<h4><span>&#128073;</span> ${data.title}</h4>`;
+        warning+= `<p>${data.message}</p>`;
         warning+= '</div>'
 
         return warning;
@@ -357,9 +329,9 @@ class HtmlViewer {
     parseCode(jsonItem: CodeElement): string {
         const data = jsonItem.data;
 
-        let code = '<div style="padding: 18px; border-radius: 9px; background: #f6f8fa; line-height: 1.45; position: relative;">';
+        let code = '<div class="code-layout">';
 
-        let copyBtn = '<button class="copy-code-btn" style="position: absolute; top: 10px; right: 10px;">'+
+        let copyBtn = '<button class="copy-code-btn">'+
                         '<svg width="24" height="24" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m6 18h-3c-.48 0-1-.379-1-1v-14c0-.481.38-1 1-1h14c.621 0 1 .522 1 1v3h3c.621 0 1 .522 1 1v14c0 .621-.522 1-1 1h-14c-.48 0-1-.379-1-1zm1.5-10.5v13h13v-13zm9-1.5v-2.5h-13v13h2.5v-9.5c0-.481.38-1 1-1z" fill-rule="nonzero"/></svg>'+
                     '</button>';
         
@@ -378,15 +350,11 @@ class HtmlViewer {
     parseEmbed(jsonItem: EmbedElement): string {
         const data = jsonItem.data;
 
-        let embedContent = `<iframe src="${data.embed}" width="${data.width}" height="${data.height}"`+
-                            'style="border: 0; border-radius: 14px; box-shadow: 2px 2px 20px #e1e1e1;"'+
-                        '></iframe>';
-        
-        let embedLayout = '<div>';
-        embedLayout+= embedContent;
+        let embedLayout = '<div class="embed-layout">';
+        embedLayout+= `<iframe src="${data.embed}" width="${data.width}" height="${data.height}"></iframe>`;
 
         if(data.caption) {
-            embedLayout+= `<p style="padding: 0px; margin: 12px 23px;">${data.caption}</p>`;
+            embedLayout+= `<p class="embed-caption">${data.caption}</p>`;
         }
         
         embedLayout+= '</div>';
@@ -402,23 +370,19 @@ class HtmlViewer {
     parsePersonality(jsonItem: PersonalityElement): string {
         const data = jsonItem.data;
 
-        const cardStyle = 'display: flex; justify-content: space-between; width: 80%; background: white;'+ 
-            'border: 1px solid #ededed; padding: 18px; box-shadow: 1px 1px 4px #f3f3f3; border-radius: 7px;';
-
-        let personality = `<div style="${cardStyle}">`;
+        let personality = `<div class="personality-layout">`;
 
         personality+= `<div>
                         <h3 style="font-size: 18px;">${data.name}</h3>
-                        <p>${data.description}</p>
-                        ${(data.link)? '<a href="${data.link}" style="color: #a3a3a3;">${data.link}</a>':''}
+                        ${(data.description)? `<p>${data.description}</p>`:''}
+                        ${(data.link)? `<a href="${data.link}" style="color: #a3a3a3;">${data.link}</a>`:''}
                     </div>`;
 
         if(data.photo) {
-            personality+= `<img src="${data.photo}" style="width: 100px; border-radius: 5px;">`
+            personality+= `<img src="${data.photo}" class="person-image">`
         }
 
         personality+= '</div>';
-
         return personality;
     }
 
@@ -430,15 +394,8 @@ class HtmlViewer {
     parseAttaches(jsonItem: AttachesElement): string {
         const data = jsonItem.data;
 
-        const attachmentStyle = 'display: flex; align-items: center; gap: 18px;'+
-                                'text-decoration: none; color: black; width: 50%; padding: 13px;'+
-                                'border: 1px solid #f1f1f1; border-radius: 9px;';
-        
-        const extensionStyle = 'display: inline-block; padding: 6px 6px; background: #db3737; color: white; border-radius: 7px;';
-
-
-        let attachment = `<a href="${data.file.url}" target="_blank" style="${attachmentStyle}" title="${data.title}">`+
-                            `<span style="${extensionStyle}">${data.file.extension}</span>`+
+        let attachment = `<a href="${data.file.url}" target="_blank" class="attachment-layout" title="${data.title}">`+
+                            `<span class="attachment-extension">${data.file.extension}</span>`+
                             `<div>`+
                                 `<p style="margin: 0px;">${data.file.name}</p>`+
                                 `${(data.file.size)? `<span style="color: #8b8b8b; font-size: 15px;">${data.file.size} MiB</span>` : ''}`+
@@ -502,34 +459,12 @@ class HtmlViewer {
 
         scaleBtns.forEach((btn, index) => {
             btn.addEventListener('click', function() {
-                if(btn.parentElement!.style.position == 'relative') {
-                    btn.parentElement!.style.position = "fixed";
-                    btn.parentElement!.style.top = "0px";
-                    btn.parentElement!.style.left = "0px";
-                    btn.parentElement!.style.background = "#efefef80";
-                    btn.parentElement!.style.height = "100%";
-                    btn.parentElement!.style.zIndex = "9999999";
-
-                    const img = btn.parentElement!.querySelector('img');
-                    if(img != undefined) {
-                        img.style.height = "100%";
-                        img.style.width = "auto";
-                        img.style.margin = "auto";
-                    }
-
+                if(btn.parentElement!.classList.contains('scaled')) {
                     btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M18 3h2v4h4v2h-6v-6zm6 12v2h-4v4h-2v-6h6zm-18 6h-2v-4h-4v-2h6v6zm-6-12v-2h4v-4h2v6h-6z"/></svg>';
+                    btn.parentElement!.classList.remove('scaled');
                 }
                 else {
-                    btn.parentElement!.style.position = "relative";
-                    btn.parentElement!.style.height = "auto";
-                    btn.parentElement!.style.zIndex = "auto";
-
-                    const img = btn.parentElement!.querySelector('img');
-                    if(img != undefined) {
-                        img.style.height = "auto";
-                        img.style.width = "100%";
-                    }
-
+                    btn.parentElement!.classList.add('scaled');
                     btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-2v-4h-4v-2h6v6zm-6 12v-2h4v-4h2v6h-6zm-18-6h2v4h4v2h-6v-6zm6-12v2h-4v4h-2v-6h6z"/></svg>';
                 }
             });
@@ -539,170 +474,6 @@ class HtmlViewer {
     public toString = (): String|undefined => {
         return this.html;
     }
-}
-
-
-interface EditorJsElement {
-    id: String
-    type: String
-    data: any
-}
-
-
-// Elements interfaces
-interface ParagraphElement extends EditorJsElement {
-    data: ParagraphData
-}
-
-interface HeaderElement extends EditorJsElement {
-    data: HeaderData
-}
-
-interface TableElement extends EditorJsElement {
-    data: TableData
-}
-
-interface ImageElement extends EditorJsElement {
-    data: ImageData
-}
-
-interface QuoteElement extends EditorJsElement {
-    data: QuoteData
-}
-
-interface ListElement extends EditorJsElement {
-    data: ListData
-}
-
-interface LinkElement extends EditorJsElement {
-    data: LinkData
-}
-
-interface CheckListElement extends EditorJsElement {
-    data: CheckListData
-}
-
-interface WarningElement extends EditorJsElement {
-    data: WarningData
-}
-
-interface CodeElement extends EditorJsElement {
-    data: CodeData
-}
-
-interface EmbedElement extends EditorJsElement {
-    data: EmbedData
-}
-
-interface PersonalityElement extends EditorJsElement {
-    data: PersonalityData
-}
-
-interface AttachesElement extends EditorJsElement {
-    data: AttachesData
-}
-
-// Data interfaces
-interface HeaderData {
-    text: String
-    level: String
-}
-
-interface ParagraphData {
-    text: String
-}
-
-interface TableData {
-    withHeadings?: String
-    content: Array<Array<any>>
-}
-
-interface ImageData {
-    file: {
-        url: string
-    }
-    caption?: string
-    withBorder: boolean
-    stretched: boolean
-    withBackground: Boolean
-}
-
-interface QuoteData {
-    text: string
-    caption: string
-    alignment: string
-}
-
-interface ListData {
-    style: "ordered" | "unordered"
-    items: Array<string|NestedListItem>
-}
-
-interface NestedListItem {
-    content: string
-    items: Array<NestedListItem>
-}
-
-interface LinkData {
-    link: string
-    meta: LinkMeta
-}
-
-interface LinkMeta {
-    title: string
-    description: string
-    image: ImageLinkMeta
-}
-
-interface ImageLinkMeta {
-    url: string
-}
-
-interface CheckListData {
-    items: Array<CheckListItem>
-}
-
-type CheckListItem = {
-    text: string
-    checked: boolean
-}
-
-interface WarningData {
-    title: string
-    message: string
-}
-
-interface CodeData {
-    code: string
-}
-
-interface EmbedData {
-    service: string
-    source: string
-    embed: string
-    width: number|string
-    height: number|string
-    caption: string|null
-}
-
-
-interface PersonalityData {
-    name: string
-    description: string
-    link: string
-    photo: string
-}
-
-interface AttachesData {
-    file: AttachmentFile
-    title?: string
-}
-
-type AttachmentFile = {
-    url: string
-    size?: string|number
-    extension?: string
-    name?: string
 }
 
 export default HtmlViewer;
