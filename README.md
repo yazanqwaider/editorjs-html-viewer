@@ -72,6 +72,15 @@ htmlViewer.render("#contentLayout");
 htmlViewer.applyHandlers(); 
 ```
 
+## Reading Time
+You can get the reading time of the content through :
+```js
+htmlViewer.getReadingTime();
+```
+the returned value is an object which contains :
+- minutes
+- wordsCount
+
 
 ## Supported plugins
 

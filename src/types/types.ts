@@ -160,3 +160,9 @@ type AttachmentFile = {
     extension?: string
     name?: string
 }
+
+
+type ReadingTime = {
+    minutes: number
+    wordsCount: number
+}

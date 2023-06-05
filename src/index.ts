@@ -12,6 +12,24 @@ class HtmlViewer {
     html?: string
 
     /**
+     * The plain text of the content
+     */
+    private plainText: string = ""
+
+    /**
+     * Word per minute
+     */
+    private wpm: number = 250
+
+    /**
+     * The reading time
+     */
+    private readingTime: ReadingTime = {
+        minutes: 0,
+        wordsCount: 0
+    }
+
+    /**
      * Initialize instance from HtmlViewer class.
      * 
      * @param jsonContent
@@ -53,9 +71,10 @@ class HtmlViewer {
         });
 
         result+= '</div>';
-        
+
         result = result.replace(/(\r\n|\n|\r|\t)/gm, "");
         this.html = result;
+        this.calculateReadingTime();
     }
 
     /**
@@ -87,6 +106,7 @@ class HtmlViewer {
      */
     parseParagraph(jsonItem: ParagraphElement): string {
         const data = jsonItem.data;
+        this.addPlainText(data.text);
         return `<p>${data.text}</p>`;
     }
 
@@ -98,6 +118,7 @@ class HtmlViewer {
     parseHeader(jsonItem: HeaderElement): string {
         const data = jsonItem.data;
         const level: String = (data.level)? data.level : "1";
+        this.addPlainText(data.text);
         return `<h${level}>${data.text}</h${level}>`;
     }
 
@@ -116,6 +137,7 @@ class HtmlViewer {
             let heading = '<thead><tr>';
             firstRow.map((col, index) => {
                 heading+= `<th>${col}</th>`;
+                this.addPlainText(col);
             });
             heading+= '</tr></thead>';
 
@@ -128,6 +150,7 @@ class HtmlViewer {
             table+= '<tr>';
             row.map((col) => {
                 table+= `<td>${col}</td>`;
+                this.addPlainText(col);
             });
             table+= '</tr>';
         });
@@ -189,6 +212,8 @@ class HtmlViewer {
                 <smal>${data.caption}</small>
             </div>
         `;
+
+        this.addPlainText(`${data.text} ${data.caption}`);
         return quote;
     }
 
@@ -203,10 +228,12 @@ class HtmlViewer {
         let endList = `${data.style == 'ordered'? '</ol>' : '</ul>'}`;
         let list = beginList;
 
+        let plainText = "";
         function renderListItem(item: string|NestedListItem): string {
             let listItem = '';
             if(typeof(item) == 'string') {
                 listItem+= `<li>${item}</li>`;
+                plainText+= " " + item;
             }
             else if('content' in item) {
                 listItem+= `<li>${item.content}`;
@@ -219,7 +246,9 @@ class HtmlViewer {
                     listItem+= `${endList}`;
                 }
                 listItem+= `</li>`;
+                plainText+= " " + item.content;
             }
+
             return listItem;
         }
 
@@ -228,6 +257,7 @@ class HtmlViewer {
         });
 
         list+= endList;
+        this.addPlainText(plainText);
         return list;
     }
 
@@ -265,6 +295,8 @@ class HtmlViewer {
         }
 
         linkLayout+= '</a>';
+
+        this.addPlainText(`${data.meta.title} ${data.meta.description || ''}`);
         return linkLayout;
     }
 
@@ -282,9 +314,9 @@ class HtmlViewer {
      */
     parseChecklist(jsonItem: CheckListElement): string {
         const data = jsonItem.data;
+        let plainText = "";
 
         let checkList = '<div>';
-
         data.items.forEach((item) => {
             checkList+= '<div class="checklist-item">';
 
@@ -300,9 +332,13 @@ class HtmlViewer {
 
             checkList+= `<p>${item.text}</p>`;
             checkList+= '</div>';
+
+            plainText+= ` ${item.text}`;
         });
 
         checkList+= '</div>';
+
+        this.addPlainText(plainText);
         return checkList;
     }
 
@@ -318,6 +354,7 @@ class HtmlViewer {
         warning+= `<p>${data.message}</p>`;
         warning+= '</div>'
 
+        this.addPlainText(`${data.title} ${data.message}`);
         return warning;
     }
 
@@ -339,6 +376,7 @@ class HtmlViewer {
         code+= `<p class="code-value">${data.code}</p>`;
         code+= '</div>';
 
+        this.addPlainText(data.code);
         return code;
     }
 
@@ -355,6 +393,7 @@ class HtmlViewer {
 
         if(data.caption) {
             embedLayout+= `<p class="embed-caption">${data.caption}</p>`;
+            this.addPlainText(data.caption);
         }
         
         embedLayout+= '</div>';
@@ -383,6 +422,7 @@ class HtmlViewer {
         }
 
         personality+= '</div>';
+        this.addPlainText(`${data.name} ${data.description}`);
         return personality;
     }
 
@@ -469,6 +509,34 @@ class HtmlViewer {
                 }
             });
         });
+    }
+
+    /**
+     * Add the plain text
+     */
+    private addPlainText(text: String): void {
+        this.plainText+= ` ${text}`; 
+    }
+
+    /**
+     * Calculate the reading time based on words count
+     * and word per minute
+     */
+    private calculateReadingTime(): void {
+        const wordsCount: number = this.plainText.split(' ').length;
+        if(wordsCount > 0) {
+            const minutes: number = Math.ceil(wordsCount / this.wpm);
+            this.readingTime.wordsCount = wordsCount;
+            this.readingTime.minutes = minutes;
+        }
+    }
+    
+    /**
+     * Reading time getter
+     * 
+     */
+    public getReadingTime(): ReadingTime {
+        return this.readingTime;
     }
 
     public toString = (): String|undefined => {
