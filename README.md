@@ -19,10 +19,16 @@ npm i editorjs-html-viewer
 import HtmlViewer from 'editorjs-html-viewer';
 ```
 
+From cdn :
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/editorjs-html-viewer@latest">
+```
+
 And in nodejs environment :
 
 ```js
-const HtmlViewer = require('editorjs-html-viewer').default;
+const HtmlViewer = require('editorjs-html-viewer/nodejs');
 ```
 
 
@@ -49,27 +55,27 @@ import 'editorjs-html-viewer/dist/css/main.min.css';
 ## Usage
 
 ```js
-// converted your stored content in database to json.
-let jsonElements = "...";
+// your stored content blocks in database as an array.
+let blocksElements = [{id: 1, type: "text", "data": {text: "Hello world"}}];
 
-// create new object from HtmlViewer class with json as parameter.
-let htmlViewer = new HtmlViewer(jsonElements);
+// create a new object from HtmlViewer class with blocks as a parameter.
+let htmlViewer = new HtmlViewer(blocksElements);
 
 // you can use the html code result in your way.
 console.log(htmlViewer.html);   
 ```
 
 ```js
-let htmlViewer = new HtmlViewer(jsonElements);
+let htmlViewer = new HtmlViewer(blocksElements);
 
 // you can render the html directly by passing the selector
 htmlViewer.render("#contentLayout");
 ```
 
-**Note** If you use the html result by your way, you need to call ***applyHandlers*** function to let some features work correctly.
+**Note** If you use the html result by your way, you need to call ***applyHandlers*** static function to let some features work correctly.
 
 ```js
-htmlViewer.applyHandlers(); 
+HtmlViewer.applyHandlers(); 
 ```
 
 ## Reading Time

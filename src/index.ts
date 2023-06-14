@@ -88,7 +88,7 @@ class HtmlViewer {
             if(this.html) {
                 element.innerHTML = this.html;
 
-                this.applyHandlers();
+                HtmlViewer.applyHandlers();
             }
             else {
                 console.error('The html content is empty !');
@@ -366,7 +366,7 @@ class HtmlViewer {
     parseCode(jsonItem: CodeElement): string {
         const data = jsonItem.data;
 
-        let code = '<div class="code-layout">';
+        let code = '<div class="code-layout" dir="ltr">';
 
         let copyBtn = '<button class="copy-code-btn">'+
                         '<svg width="24" height="24" clip-rule="evenodd" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m6 18h-3c-.48 0-1-.379-1-1v-14c0-.481.38-1 1-1h14c.621 0 1 .522 1 1v3h3c.621 0 1 .522 1 1v14c0 .621-.522 1-1 1h-14c-.48 0-1-.379-1-1zm1.5-10.5v13h13v-13zm9-1.5v-2.5h-13v13h2.5v-9.5c0-.481.38-1 1-1z" fill-rule="nonzero"/></svg>'+
@@ -450,7 +450,11 @@ class HtmlViewer {
      * Apply some handlers to let features work correctly.
      * 
      */
-    applyHandlers() {
+    static applyHandlers() {
+        if(typeof document == 'undefined') {
+            throw new Error('document is not defined, you can\'t call the applyHandlers function from server side.');
+        }
+
         this.registerCopyHandler();
         this.registerScaleImageHandler();
     }
@@ -459,7 +463,7 @@ class HtmlViewer {
      * Register copy handler, to copy code text in code feature.
      * 
      */
-    private registerCopyHandler(): void {
+    private static registerCopyHandler(): void {
         const copyBtns = document.querySelectorAll('.ede .copy-code-btn');
         copyBtns.forEach((btn, index) => {
             btn.addEventListener('click', function() {
@@ -494,7 +498,7 @@ class HtmlViewer {
      * Register scale image handler.
      * 
      */
-    private registerScaleImageHandler(): void {
+    private static registerScaleImageHandler(): void {
         const scaleBtns = document.querySelectorAll('.ede .scale-image-btn');
 
         scaleBtns.forEach((btn, index) => {
