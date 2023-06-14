@@ -1,6 +1,6 @@
 {
   "name": "editorjs-html-viewer",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Editorjs viewer convert json to html.",
   "keywords": [
     "EditorJs",
@@ -13,7 +13,7 @@
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./nodejs": "./dist/nodejs/index.js"
+    "./nodejs": "./dist/nodejs"
   },
   "scripts": {
     "watch": "tsc src/index.ts --outDir dist --watch",
