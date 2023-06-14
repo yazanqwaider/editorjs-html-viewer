@@ -1,6 +1,6 @@
 {
   "name": "editorjs-html-viewer",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "Editorjs viewer convert json to html.",
   "keywords": [
     "EditorJs",
@@ -13,12 +13,13 @@
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
-    "./nodejs": "./dist/nodejs"
+    "./nodejs": "./dist/nodejs/index.js"
   },
   "scripts": {
-    "watch": "tsc src/index.ts --outDir dist --watch",
+    "watch": "tsc --project tsconfig.json && tsc --project tsconfig-es6.json --watch",
     "build": "tsc --project tsconfig.json && tsc --project tsconfig-es6.json",
-    "watch-style": "sass src/sass/main.sass:dist/css/main.min.css --watch --style compressed"
+    "watch-style": "sass src/sass/main.sass:dist/css/main.min.css --watch --style compressed",
+    "build-style": "sass src/sass/main.sass:dist/css/main.min.css --style compressed"
   },
   "author": "yazan qwaider",
   "license": "MIT",
