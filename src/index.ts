@@ -128,7 +128,7 @@ class HtmlViewer {
         const data = jsonItem.data;
         const level: String = (data.level)? data.level : "1";
         this.addPlainText(data.text);
-        const headerClass = (this.options.withDefaultStyle)? `h${level}` : '';
+        const headerClass = (this.options.withDefaultStyle)? `class="h${level}"` : '';
         return `<h${level} ${headerClass}>${data.text}</h${level}>`;
     }
 
@@ -234,7 +234,7 @@ class HtmlViewer {
      */
     parseList(jsonItem: ListElement): string {
         const data = jsonItem.data;
-        const listClass = (this.options.withDefaultStyle)? 'list' : '';
+        const listClass = (this.options.withDefaultStyle)? 'class="list"' : '';
 
         let beginList = `${data.style == 'ordered'? `<ol ${listClass}>` : `<ul ${listClass}>`}`;
         let endList = `${data.style == 'ordered'? '</ol>' : '</ul>'}`;
