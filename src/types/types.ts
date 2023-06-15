@@ -4,6 +4,10 @@ interface EditorJsElement {
     data: any
 }
 
+interface EditorJsOptions {
+    withDefaultStyle: boolean 
+}
+
 
 // Elements interfaces
 interface ParagraphElement extends EditorJsElement {

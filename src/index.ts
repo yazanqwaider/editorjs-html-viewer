@@ -30,12 +30,20 @@ class HtmlViewer {
     }
 
     /**
+     * The editorjs viewer options
+     */
+    private options: EditorJsOptions = {
+        withDefaultStyle: false
+    }
+
+    /**
      * Initialize instance from HtmlViewer class.
      * 
      * @param jsonContent
      */
-    constructor(jsonContent: Array<EditorJsElement>) {
+    constructor(jsonContent: Array<EditorJsElement>, options: EditorJsOptions = {withDefaultStyle: false}) {
         this.jsonContent = jsonContent;
+        this.options = options;
         this.parser();
     }
 
@@ -106,6 +114,7 @@ class HtmlViewer {
      */
     parseParagraph(jsonItem: ParagraphElement): string {
         const data = jsonItem.data;
+        if(data.text.length == 0) return '<br />';
         this.addPlainText(data.text);
         return `<p>${data.text}</p>`;
     }
@@ -119,7 +128,8 @@ class HtmlViewer {
         const data = jsonItem.data;
         const level: String = (data.level)? data.level : "1";
         this.addPlainText(data.text);
-        return `<h${level}>${data.text}</h${level}>`;
+        const headerClass = (this.options.withDefaultStyle)? `h${level}` : '';
+        return `<h${level} ${headerClass}>${data.text}</h${level}>`;
     }
 
     /**
@@ -224,7 +234,9 @@ class HtmlViewer {
      */
     parseList(jsonItem: ListElement): string {
         const data = jsonItem.data;
-        let beginList = `${data.style == 'ordered'? '<ol>' : '<ul>'}`;
+        const listClass = (this.options.withDefaultStyle)? 'list' : '';
+
+        let beginList = `${data.style == 'ordered'? `<ol ${listClass}>` : `<ul ${listClass}>`}`;
         let endList = `${data.style == 'ordered'? '</ol>' : '</ul>'}`;
         let list = beginList;
 

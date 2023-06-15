@@ -78,6 +78,12 @@ htmlViewer.render("#contentLayout");
 HtmlViewer.applyHandlers(); 
 ```
 
+
+Sometimes you would like to use a css framework witch built on removing the default styles (normalize), such as [Tailwindcss](https://tailwindcss.com/docs/preflight), so, you can prevent that happend for some tags like (h and list) tags through :
+```js
+let htmlViewer = new HtmlViewer(blocksElements, {withDefaultStyle: true});
+```
+
 ## Reading Time
 You can get the reading time of the content through :
 ```js
