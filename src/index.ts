@@ -116,7 +116,7 @@ class HtmlViewer {
         const data = jsonItem.data;
         if(data.text.length == 0) return '<br />';
         this.addPlainText(data.text);
-        return `<p>${data.text}</p>`;
+        return `<p dir="auto">${data.text}</p>`;
     }
 
     /**
@@ -129,7 +129,7 @@ class HtmlViewer {
         const level: String = (data.level)? data.level : "1";
         this.addPlainText(data.text);
         const headerClass = (this.options.withDefaultStyle)? `class="h${level}"` : '';
-        return `<h${level} ${headerClass}>${data.text}</h${level}>`;
+        return `<h${level} dir="auto" ${headerClass}>${data.text}</h${level}>`;
     }
 
     /**
