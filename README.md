@@ -84,6 +84,11 @@ Sometimes you would like to use a css framework witch built on removing the defa
 let htmlViewer = new HtmlViewer(blocksElements, {withDefaultStyle: true});
 ```
 
+If you prefer the dark mode in code blocks like me, don't change anything because it is default, but also you can use the light mode through changing the ***codeTheme*** option :
+```js
+let htmlViewer = new HtmlViewer(blocksElements, {codeTheme: 'light'});
+```
+
 ## Reading Time
 You can get the reading time of the content through :
 ```js
@@ -104,7 +109,7 @@ the returned value is an object which contains :
 - Link
 - Delimiter
 - Inline code
-- Code
+- Code, and (editorjs-codeflask)
 - Checklist
 - Warning
 - Embed

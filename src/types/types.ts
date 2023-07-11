@@ -6,6 +6,7 @@ interface EditorJsElement {
 
 interface EditorJsOptions {
     withDefaultStyle: boolean 
+    codeTheme: "dark" | "light" 
 }
 
 
@@ -134,6 +135,7 @@ interface WarningData {
 
 interface CodeData {
     code: string
+    language?: string|null
 }
 
 interface EmbedData {
