@@ -397,7 +397,7 @@ class HtmlViewer {
         
         code+= copyBtn;
 
-        const codeContent = data.code.replace('\n', '<br>');
+        const codeContent = data.code.replace(/\n/gi, '<br>');
         code+= `<div class="code-header">${data.language || 'code'}</div>`;
         code+= `<p class="code-value">${codeContent}</p>`;
         code+= '</div>';
