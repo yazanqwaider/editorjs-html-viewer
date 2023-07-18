@@ -493,8 +493,7 @@ class HtmlViewer {
         const copyBtns = document.querySelectorAll('.ede .copy-code-btn');
         copyBtns.forEach((btn, index) => {
             btn.addEventListener('click', function() {
-                const value = btn.nextElementSibling?.innerHTML;
-
+                const value = btn.parentElement?.querySelector('.code-value')?.innerHTML;
                 if(value) {
                     navigator.clipboard.writeText(value);
                 }
